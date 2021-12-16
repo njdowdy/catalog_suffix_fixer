@@ -1,5 +1,4 @@
 import time
-
 import catalog_suffix_fixer as c
 import multiprocessing
 import os
@@ -17,6 +16,6 @@ if __name__ == "__main__":
             # initialize monitors
             multiprocessing.Process(target=c.veranus.start_monitor, args=(f"{mypath}{subdir}/", )).start()
             proc_count += 1
-            # log monitor task started
-    time.sleep(0.5)
+            c.log.log_watchdog_startup(to_watch=f"{mypath}{subdir}/")
+    time.sleep(0.1)
     c.veranus.queue_existing(mypath)
