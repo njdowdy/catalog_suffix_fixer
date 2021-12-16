@@ -2,21 +2,44 @@ from loguru import logger
 import sys
 
 
-def log_test():
-    logger.debug("Hello, World!")
-
-
-def log_start(user: str = "anonymous", log_location: str = "catalog_suffix_fixer/logs/"):
+def log_start(log_location: str = "catalog_suffix_fixer/logs/"):
     """
     Log when the script was run and who initiated it
     """
-    logger.add(f"{log_location}file_" + "{time}.log")
-    logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO")
+    logger.add(f"{log_location}log_" + "{time}.log", enqueue=True, rotation="10 MB")
+    logger.add(
+        sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO"
+    )
+    logger.info("admin: Logging started...")
 
 
-def log_end(user: str = "anonymous", log_location: str = "catalog_suffix_fixer/logs/"):
-    """
-    Log when the script was completed and who initiated it
-    """
-    logger.add(f"{log_location}file_" + "{time}.log")
-    logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO")
+def log_watchdog_startup(to_watch: str = "."):
+    logger.info(
+        "admin: Veranus worker began monitoring {to_watch}...", to_watch=to_watch
+    )
+
+
+def log_job_summary(
+    user: str = "anonymous",
+    department: str = "???",
+    file_in: str = "file_in",
+    file_out: str = "file_out",
+    processed: int = 0,
+    generated: int = 0,
+    total: int = 0,
+):
+    """ """
+    logger.info(
+        "Submitter: {user} | Dept.: {department} | [{file_in}] >> [{file_out}] | Processed {processed} | Generated {generated} | New Total: {total} | JOB COMPLETE!",
+        user=user,
+        department=department,
+        file_in=file_in,
+        file_out=file_out,
+        processed=processed,
+        generated=generated,
+        total=total,
+    )
+
+
+def log_processing_event(file_in: str = "file_in", statement: str = ""):
+    logger.info("{file_in}{statement}", file_in=file_in, statement=statement)
