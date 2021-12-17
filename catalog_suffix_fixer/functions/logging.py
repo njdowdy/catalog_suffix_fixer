@@ -2,7 +2,7 @@ from loguru import logger
 import sys
 
 
-def log_start(log_location: str = "catalog_suffix_fixer/logs/"):
+def log_start(log_location: str = "catalog_suffix_fixer/logs/") -> None:
     """
     Log when the script was run and who initiated it
     """
@@ -27,7 +27,7 @@ def log_job_summary(
     processed: int = 0,
     generated: int = 0,
     total: int = 0,
-):
+) -> None:
     """ """
     logger.info(
         "Submitter: {user} | Dept.: {department} | [{file_in}] >> [{file_out}] | Processed {processed} | Generated {generated} | New Total: {total} | JOB COMPLETE!",
@@ -41,5 +41,5 @@ def log_job_summary(
     )
 
 
-def log_processing_event(file_in: str = "file_in", statement: str = ""):
+def log_processing_event(file_in: str = "file_in", statement: str = "") -> None:
     logger.info("{file_in}{statement}", file_in=file_in, statement=statement)
