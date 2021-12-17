@@ -102,7 +102,7 @@ def generate_new_records(df: pd.DataFrame) -> pd.DataFrame:
 
 def save_df(df: pd.DataFrame, path: str) -> None:
     os.makedirs("/".join(path.split("/")[0:-1]), exist_ok=True)
-    df.to_csv(path)
+    df.to_csv(path)  # Note: uses line terminator of current OS (Windows: \r\n | Linux: \n)
 
 
 def number_generated(df: pd.DataFrame, offset: int = 0) -> int:
