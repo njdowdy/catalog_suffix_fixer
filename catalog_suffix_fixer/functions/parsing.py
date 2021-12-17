@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 import re
 import string
 import os
@@ -43,7 +43,7 @@ def sort_df(df: pd.DataFrame) -> pd.DataFrame:
     return df_out
 
 
-def remove_empty_rows(df: pd.DataFrame, column_names: list[str] = None) -> pd.DataFrame:
+def remove_empty_rows(df: pd.DataFrame, column_names: List[str] = None) -> pd.DataFrame:
     if not column_names:
         column_names = ["Accession Number"]
     df_out = df.replace(r"^s*$", float("NaN"), regex=True).dropna(subset=column_names)
@@ -57,7 +57,7 @@ def number_processed(df: pd.DataFrame) -> int:
 
 def cat_suffix_range(
     cat_suf: Tuple[Union[int, str], Union[int, str]]
-) -> list[Union[int, str]]:
+) -> List[Union[int, str]]:
     list_out = []
     if type(cat_suf[1]) == str:
         for n in range(1, len(cat_suf[1]) + 1):
