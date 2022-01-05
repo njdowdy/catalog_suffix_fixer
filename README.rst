@@ -11,6 +11,7 @@ HOW TO USE
     - ``cd catalog_suffix_fixer``
     - ``poetry install``
     - ``source`poetry env info --path`/bin/activate``
+#. Ensure a folder at ``catalog_suffix_fixer/input`` exists with at least one subdirectory (e.g., ``catalog_suffix_fixer/input/myDept``)
 #. Adjust ``script.py`` to reflect the path you want to watch and adjust other options as needed
 #. To Run Headless:
     - Linux:
