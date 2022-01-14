@@ -20,6 +20,7 @@ def log_watchdog_startup(to_watch: str = "."):
 
 
 def log_job_summary(
+    job_id: str = "NA",
     user: str = "anonymous",
     department: str = "???",
     file_in: str = "file_in",
@@ -30,7 +31,8 @@ def log_job_summary(
 ) -> None:
     """ """
     logger.info(
-        "Submitter: {user} | Dept.: {department} | [{file_in}] >> [{file_out}] | Processed {processed} | Generated {generated} | New Total: {total} | JOB COMPLETE!",
+        "JOB ID: {job_id} -- Submitter: {user} | Dept.: {department} | [{file_in}] >> [{file_out}] | Processed {processed} | Generated {generated} | New Total: {total} | JOB COMPLETE!",
+        job_id=job_id,
         user=user,
         department=department,
         file_in=file_in,
@@ -41,5 +43,5 @@ def log_job_summary(
     )
 
 
-def log_processing_event(file_in: str = "file_in", statement: str = "") -> None:
-    logger.info("{file_in}{statement}", file_in=file_in, statement=statement)
+def log_processing_event(job_id: str = "NA", file_in: str = "file_in", statement: str = "") -> None:
+    logger.info("JOB ID: {job_id} -- {file_in}{statement}", job_id=job_id, file_in=file_in, statement=statement)

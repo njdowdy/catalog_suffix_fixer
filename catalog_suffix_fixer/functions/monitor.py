@@ -1,6 +1,7 @@
 import time
 import os
 import re
+import uuid
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from catalog_suffix_fixer.functions import parsing as parse
@@ -43,16 +44,17 @@ def file_process(file: str) -> None:
     filestub = "/".join(file.split("/")[2:])
     file_exists = os.path.exists(file)
     if file_exists:
-        log.log_processing_event(filestub, " was detected...")
+        job_id = uuid.uuid4().hex
+        log.log_processing_event(job_id, filestub, " was detected...")
         time.sleep(0.1)
         # check if file exists in staging
         file_stage = f"{file.replace('input', 'staging')}"
         file_stage = resolve_destination_path(
-            path=file_stage, stub=filestub, classification="staging"
+            path=file_stage, stub=filestub, classification="staging", job_id=job_id
         )
         # move to output
         move_file(
-            path_in=file, path_out=file_stage, stub=filestub, classification="staging"
+            path_in=file, path_out=file_stage, stub=filestub, classification="staging", job_id=job_id
         )
         # do a thing
         df = parse.import_data(file_stage)
@@ -65,15 +67,16 @@ def file_process(file: str) -> None:
         # check if file exists in output
         file_out = f"{file_stage.replace('staging', 'output')}"
         file_out = resolve_destination_path(
-            path=file_out, stub=filestub, classification="processing"
+            path=file_out, stub=filestub, classification="processing", job_id=job_id
         )
         parse.save_df(df, file_out)
         # check if file exists in processed
         file_proc = f"{file_stage.replace('staging', 'processed')}"
-        file_proc = resolve_destination_path(path=file_proc, stub=filestub)
+        file_proc = resolve_destination_path(path=file_proc, stub=filestub, job_id=job_id)
         # move to output
-        move_file(path_in=file_stage, path_out=file_proc, stub=filestub)
+        move_file(job_id=job_id, path_in=file_stage, path_out=file_proc, stub=filestub)
         log.log_job_summary(
+            job_id=job_id,
             user=file.split("/")[-1].split("_")[0],
             department=file.split("/")[-2],
             file_in=file,
@@ -85,7 +88,7 @@ def file_process(file: str) -> None:
 
 
 def move_file(
-    path_in: str, path_out: str, stub: str, classification: str = "moving"
+    job_id: str, path_in: str, path_out: str, stub: str, classification: str = "moving"
 ) -> None:
     os.makedirs("/".join(path_out.split("/")[0:-1]), exist_ok=True)
     if classification == "staging":
@@ -95,11 +98,11 @@ def move_file(
     else:
         statement = "!"
     os.rename(path_in, path_out)
-    log.log_processing_event(stub, statement)
+    log.log_processing_event(job_id, stub, statement)
 
 
 def resolve_destination_path(
-    path: str, stub: str, classification: str = "moving"
+    job_id: str, path: str, stub: str, classification: str = "moving"
 ) -> str:
     if os.path.exists(path):
         while os.path.exists(path):
@@ -113,7 +116,7 @@ def resolve_destination_path(
             statement = f" exists in processed directory. Renamed to: {file_out_stub}"
         else:
             statement = "renamed!"
-        log.log_processing_event(stub, statement)
+        log.log_processing_event(job_id, stub, statement)
         return path
     else:
         return path
