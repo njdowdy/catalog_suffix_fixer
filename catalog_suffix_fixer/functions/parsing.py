@@ -62,9 +62,9 @@ def cat_suffix_range(
     if type(cat_suf[1]) == str:
         for n in range(1, len(cat_suf[1]) + 1):
             list_out = list_out + [n * x for x in string.ascii_lowercase]
-        list_out = list_out[list_out.index(cat_suf[0]) : list_out.index(cat_suf[1]) + 1]
+        list_out = list_out[list_out.index(cat_suf[0]): list_out.index(cat_suf[1]) + 1]
     else:
-        list_out = list(range(cat_suf[0], cat_suf[1] + 1))
+        list_out = ['.'+str(x) for x in list(range(cat_suf[0], cat_suf[1] + 1))]
     return list_out
 
 
